@@ -1,0 +1,109 @@
+<?xml version="1.0" standalone="yes"?>
+
+<project name="eucabot" basedir="." default="compile">
+    <property name="eucabot" value="${basedir}"/>
+    <property name="eucabot.build" value="${eucabot}/build" />
+    <property name="eucabot.conf" value="${eucabot}/conf" />
+    <property name="eucabot.lib" value="lib" />
+    <property name="eucabot.src" value="${eucabot}/java" />
+	<property name="eucabot.jar" value="${eucabot.build}/jar" />
+	<property name="eucabot.jar.file" value="${eucabot.jar}/eucabot.jar" />
+    <property name="eucabot.classes" value="${eucabot.build}/classes" />
+    <property name="eucabot.jar.classes" value="${eucabot.jar}/classes" />
+    <property name="eucabot.javadoc" value="${eucabot.build}/apidocs" />
+    <property name="eucabot.dist" value="${eucabot}/dist" />
+
+	<path id="eucabot.compile.classpath">
+          <fileset dir="${eucabot.lib}">
+          </fileset>
+          <dirset dir="${eucabot.classes}"/>
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${eucabot.build}" />
+		<mkdir dir="${eucabot.classes}" />
+        <mkdir dir="${eucabot.jar}" />
+        <mkdir dir="${eucabot.javadoc}" />
+        <copy toDir="${eucabot.classes}">
+            <fileset dir="${eucabot.conf}"/>
+        </copy>
+	</target>
+
+	<!--compile Java source files-->
+	<target name="compile" depends="init" description="Compile all Java source files">
+		<javac destdir="${eucabot.classes}" debug="on" target="1.5" includeantruntime="false">
+			<src path="${eucabot.src}" />
+			<classpath refid="eucabot.compile.classpath" />
+			<!--
+			<compilerarg value="-Xlint"/>
+			-->
+		</javac>
+    </target>
+
+	<target name="test.compile" depends="compile" description="Compile test java files">
+		<property name="test.src.path" value="test/java"/>
+		<javac destdir="${eucabot.classes}" debug="on" target="1.5">
+			<src path="test/java" />
+			<classpath refid="eucabot.compile.classpath" />
+		</javac>
+    </target>
+
+	<target name="jar" depends="compile">
+        <copy file="${eucabot.conf}/version.properties" toDir="${eucabot.classes}" overwrite="true">
+			<filterset>
+				<filter token="VERSION" value="${rel.version}"/>
+			</filterset>
+        </copy>
+        <jar destfile="${eucabot.jar.file}" basedir="${eucabot.classes}" excludes="**/*.xml"/>
+	</target>
+
+	<target name="javadoc" depends="init">
+		<javadoc packagenames="com.xerox.*"
+				defaultexcludes="yes"
+				sourcepath="${eucabot.src}"
+				destdir="${eucabot.javadoc}"
+				author="true"
+				version="true"
+				use="true"
+				windowtitle="eucabot - Code for the Eucalyptus Telepresence Robot">
+			<classpath refid="eucabot.compile.classpath"/>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api"/>
+		</javadoc>
+	</target>
+
+	<target name="clean" description="Deletes all the generated artifacts.">
+		<delete dir="${eucabot.build}" />
+	</target>
+
+	<target name="dist" depends="clean, javadoc">
+		<input message="Enter the version # : " addproperty="rel.version"/>
+		<mkdir dir="${eucabot.dist}"/>
+		<zip destfile="${eucabot.dist}/eucabot-${rel.version}.zip">
+			<fileset file="${eucabot.jar.file}"/>
+			<fileset file="${eucabot.bundle.file}"/>
+			<fileset file="README"/>
+			<fileset file="LICENSE.txt"/>
+            <fileset dir="${eucabot.conf}" includes="**/*"/>
+			<fileset dir="${eucabot.build}">
+				<include name="apidocs/**/*"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="test.main" depends="test.compile">
+		<java fork="true" classname="${class}">
+			<classpath>
+				<path refid="eucabot.compile.classpath"/>
+				<pathelement location="${eucabot.classes}"/>
+			</classpath>
+			<arg line="${args}"/>
+			<!--
+			<jvmarg value="-Djava.util.logging.config.file=conf/logging.properties"/>
+			<jvmarg value="-Djavax.net.ssl.trustStore=./jssecacerts"/>
+			<jvmarg value="-Djavax.net.debug=all"/>
+			-->
+		</java>
+	</target>
+</project>
+
