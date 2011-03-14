@@ -12,21 +12,23 @@ public class CControlValue extends Structure {
 	 * C type : CControlType
 	 */
 	public int type;
+	public int value;
 	public CControlValue() {
 		super();
 		initFieldOrder();
 	}
 	protected void initFieldOrder() {
-		setFieldOrder(new java.lang.String[]{"type"});
+		setFieldOrder(new java.lang.String[]{"type", "value"});
 	}
 	/**
 	 * @param type valid. The type is a duplicate of the corresponding CControl#type value.<br>
 	 * @see CControlType<br>
 	 * C type : CControlType
 	 */
-	public CControlValue(int type) {
+	public CControlValue(int type, int value) {
 		super();
 		this.type = type;
+		this.value = value;
 		initFieldOrder();
 	}
 	public static class ByReference extends CControlValue implements Structure.ByReference {
