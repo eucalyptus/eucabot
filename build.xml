@@ -83,7 +83,7 @@
         <jar destfile="${eucabot.jar.file}" basedir="${eucabot.classes}" excludes="**/*.xml"/>
 	</target>
 
-    <target name="war" depends="gwtc, compile" description="Create a war file">
+    <target name="war" depends="compile" description="Create a war file">
         <copy todir="${eucabot.build}/war">
             <fileset dir="${eucabot.webapp}"/>
         </copy>
@@ -124,6 +124,15 @@
 				<include name="apidocs/**/*"/>
 			</fileset>
 		</zip>
+	</target>
+
+	<target name="server" depends="war">
+		<java fork="true" classname="com.eucalyptus.eucabot.cameracontrol.server.CameraControl">
+			<classpath>
+				<path refid="eucabot.compile.classpath"/>
+				<pathelement location="${eucabot.classes}"/>
+			</classpath>
+		</java>
 	</target>
 
 	<target name="test.main" depends="test.compile">

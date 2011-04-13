@@ -17,16 +17,18 @@ import com.eucalyptus.eucabot.webcam.WebcamLibrary;
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
   private int handle = -1;
 
-  public GreetingServiceImpl() {
-	WebcamLibrary.c_init();
-//	IntBuffer req_size = IntBuffer.allocate(1);
-//	IntBuffer count = IntBuffer.allocate(1);
-//	WebcamLibrary.c_enum_devices(null, req_size, count);
-//	int n = count.get();
-//	System.out.println("found "+n+" cams");
-	this.handle = WebcamLibrary.c_open_device("video0");
-  }
   public String greetServer(String input) throws IllegalArgumentException {
+    if (this.handle == -1) {
+	System.out.println("going to init webcam");
+	WebcamLibrary.c_init();
+	IntBuffer req_size = IntBuffer.allocate(1);
+	IntBuffer count = IntBuffer.allocate(1);
+	WebcamLibrary.c_enum_devices(null, req_size, count);
+	int n = count.get();
+	System.out.println("found "+n+" cams");
+	this.handle = WebcamLibrary.c_open_device("video0");
+        System.out.println("cam handle = "+this.handle);
+    }
     System.out.println("I got: " + input);
 	if (input.equals("RESET")) {
 		setControl(0x23, 1);	// Tilt reset
@@ -35,16 +37,16 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		try { Thread.sleep(2000); } catch (Exception ex) {}
 	}
 	else if (input.equals("FAST_UP")) {
-		setControl(0x1e, 200);	// Tilt (relative)
-	}
-	else if (input.equals("SLOW_UP")) {
-		setControl(0x1e, 70);	// Tilt (relative)
-	}
-	else if (input.equals("FAST_DOWN")) {
 		setControl(0x1e, -200);	// Tilt (relative)
 	}
-	else if (input.equals("SLOW_DOWN")) {
+	else if (input.equals("SLOW_UP")) {
 		setControl(0x1e, -70);	// Tilt (relative)
+	}
+	else if (input.equals("FAST_DOWN")) {
+		setControl(0x1e, 200);	// Tilt (relative)
+	}
+	else if (input.equals("SLOW_DOWN")) {
+		setControl(0x1e, 70);	// Tilt (relative)
 	}
 	else if (input.equals("FAST_LEFT")) {
 		setControl(0x1c, 200);	// Pan (relative)
