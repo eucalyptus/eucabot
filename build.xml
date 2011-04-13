@@ -9,8 +9,8 @@
     <property name="eucabot.webapp.lib" value="war/WEB-INF/lib" />
     <property name="eucabot.webapp.classes" value="${eucabot.build}/war/WEB-INF/classes" />
     <property name="eucabot.src" value="${eucabot}/java" />
-	<property name="eucabot.jar" value="${eucabot.build}/jar" />
-	<property name="eucabot.jar.file" value="${eucabot.jar}/eucabot.jar" />
+    <property name="eucabot.jar" value="${eucabot.build}/jar" />
+    <property name="eucabot.jar.file" value="${eucabot.jar}/eucabot.jar" />
     <property name="eucabot.classes" value="${eucabot.build}/classes" />
     <property name="eucabot.jar.classes" value="${eucabot.jar}/classes" />
     <property name="eucabot.javadoc" value="${eucabot.build}/apidocs" />
@@ -19,8 +19,9 @@
     <property name="gwt.args" value="" />
 
 	<path id="eucabot.compile.classpath">
+          <fileset dir="${eucabot.lib}" includes="gwt*"/>
+          <fileset dir="${eucabot.lib}" excludes="gwt*"/>
           <fileset dir="${eucabot.webapp.lib}"/>
-          <fileset dir="${eucabot.lib}"/>
           <dirset dir="${eucabot.classes}"/>
 	</path>
 

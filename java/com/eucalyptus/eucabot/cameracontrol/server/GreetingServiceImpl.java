@@ -19,11 +19,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
   public GreetingServiceImpl() {
 	WebcamLibrary.c_init();
-	IntBuffer req_size = IntBuffer.allocate(1);
-	IntBuffer count = IntBuffer.allocate(1);
-	WebcamLibrary.c_enum_devices(null, req_size, count);
-	int n = count.get();
-	System.out.println("found "+n+" cams");
+//	IntBuffer req_size = IntBuffer.allocate(1);
+//	IntBuffer count = IntBuffer.allocate(1);
+//	WebcamLibrary.c_enum_devices(null, req_size, count);
+//	int n = count.get();
+//	System.out.println("found "+n+" cams");
 	this.handle = WebcamLibrary.c_open_device("video0");
   }
   public String greetServer(String input) throws IllegalArgumentException {

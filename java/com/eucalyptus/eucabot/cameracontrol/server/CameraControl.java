@@ -16,12 +16,11 @@ public class CameraControl {
         Server server = new Server(8080);
 
         // Create a handler for processing our GWT app
-        /*
         WebAppContext handler = new WebAppContext();
         handler.setContextPath("/");
         handler.setWar("./CameraControl.war");
-        */
 
+        /*
         // If your app isn't packaged into a WAR, you can do this instead
         WebAppContext altHandler = new WebAppContext();
         altHandler.setResourceBase("./war");
@@ -31,6 +30,7 @@ public class CameraControl {
         // Add it to the server
         //server.setHandler(handler);
         server.setHandler(altHandler);
+        */
 
         // Other misc. options
         server.setThreadPool(new QueuedThreadPool(20));
