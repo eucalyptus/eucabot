@@ -15,17 +15,11 @@
     <property name="eucabot.jar.classes" value="${eucabot.jar}/classes" />
     <property name="eucabot.javadoc" value="${eucabot.build}/apidocs" />
     <property name="eucabot.dist" value="${eucabot}/dist" />
-  <!-- Arguments to gwtc and devmode targets -->
-  <property name="gwt.args" value="" />
-
-  <!-- Configure path to GWT SDK -->
-  <property name="gwt.sdk" location="/Users/dkavanagh/Downloads/gwt-2.2.0" />
+    <!-- Arguments to gwtc and devmode targets -->
+    <property name="gwt.args" value="" />
 
 	<path id="eucabot.compile.classpath">
           <fileset dir="${eucabot.webapp.lib}"/>
-          <pathelement location="${gwt.sdk}/gwt-user.jar"/>
-          <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
-		  <!-- be sure to keep the gwt libs before the others... bad stuff if yo u don't -->
           <fileset dir="${eucabot.lib}"/>
           <dirset dir="${eucabot.classes}"/>
 	</path>
