@@ -173,6 +173,9 @@ int main (void)
           // Otherwise, drive straight
           drive(300, RadStraight);
         }
+    	if(UserButtonPressed) {
+      		byteTx(CmdDock);
+	    }
 
 
         // Flash the leds in sequence

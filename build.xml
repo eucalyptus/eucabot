@@ -5,6 +5,9 @@
     <property name="eucabot.build" value="${eucabot}/build" />
     <property name="eucabot.conf" value="${eucabot}/conf" />
     <property name="eucabot.lib" value="lib" />
+    <property name="eucabot.webapp" value="war" />
+    <property name="eucabot.webapp.lib" value="war/WEB-INF/lib" />
+    <property name="eucabot.webapp.classes" value="${eucabot.build}/war/WEB-INF/classes" />
     <property name="eucabot.src" value="${eucabot}/java" />
 	<property name="eucabot.jar" value="${eucabot.build}/jar" />
 	<property name="eucabot.jar.file" value="${eucabot.jar}/eucabot.jar" />
@@ -12,10 +15,18 @@
     <property name="eucabot.jar.classes" value="${eucabot.jar}/classes" />
     <property name="eucabot.javadoc" value="${eucabot.build}/apidocs" />
     <property name="eucabot.dist" value="${eucabot}/dist" />
+  <!-- Arguments to gwtc and devmode targets -->
+  <property name="gwt.args" value="" />
+
+  <!-- Configure path to GWT SDK -->
+  <property name="gwt.sdk" location="/Users/dkavanagh/Downloads/gwt-2.2.0" />
 
 	<path id="eucabot.compile.classpath">
-          <fileset dir="${eucabot.lib}">
-          </fileset>
+          <fileset dir="${eucabot.webapp.lib}"/>
+          <pathelement location="${gwt.sdk}/gwt-user.jar"/>
+          <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
+		  <!-- be sure to keep the gwt libs before the others... bad stuff if yo u don't -->
+          <fileset dir="${eucabot.lib}"/>
           <dirset dir="${eucabot.classes}"/>
 	</path>
 
@@ -39,7 +50,26 @@
 			<compilerarg value="-Xlint"/>
 			-->
 		</javac>
+        <copy todir="${eucabot.classes}">
+          <fileset dir="${eucabot.src}" excludes="**/*.java"/>
+        </copy>
     </target>
+
+  <target name="gwtc" depends="compile" description="GWT compile to JavaScript (production mode)">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <pathelement location="${eucabot.src}"/>
+        <path refid="eucabot.compile.classpath"/>
+      </classpath>
+      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+      <jvmarg value="-Xmx256M"/>
+      <arg line="-war"/>
+      <arg value="${eucabot.build}/war"/>
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg line="${gwt.args}"/>
+      <arg value="com.eucalyptus.eucabot.cameracontrol.CameraControl"/>
+    </java>
+  </target>
 
 	<target name="test.compile" depends="compile" description="Compile test java files">
 		<property name="test.src.path" value="test/java"/>
@@ -57,6 +87,16 @@
         </copy>
         <jar destfile="${eucabot.jar.file}" basedir="${eucabot.classes}" excludes="**/*.xml"/>
 	</target>
+
+    <target name="war" depends="gwtc, compile" description="Create a war file">
+        <copy todir="${eucabot.build}/war">
+            <fileset dir="${eucabot.webapp}"/>
+        </copy>
+        <copy todir="${eucabot.webapp.classes}">
+            <fileset dir="${eucabot.classes}"/>
+        </copy>
+        <zip destfile="${eucabot.build}/CameraControl.war" basedir="${eucabot.build}/war"/>
+    </target>
 
 	<target name="javadoc" depends="init">
 		<javadoc packagenames="com.xerox.*"

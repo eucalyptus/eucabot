@@ -103,6 +103,7 @@ public class CameraControl implements EntryPoint {
         sendToServer("SLOW_RIGHT");
       }
     });
+
   }
 
 	public static native void log(String msg) /*-{
